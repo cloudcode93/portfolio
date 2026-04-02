@@ -3,7 +3,11 @@ const path = require('path');
 const fastify = require('fastify')({ logger: true });
 
 // --- Plugins ---
-fastify.register(require('@fastify/cors'), { origin: true });
+fastify.register(require('@fastify/cors'), { 
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+});
 fastify.register(require('@fastify/rate-limit'), { max: 100, timeWindow: '1 minute' });
 fastify.register(require('@fastify/multipart'), { limits: { fileSize: 10 * 1024 * 1024 } });
 fastify.register(require('@fastify/static'), {
