@@ -11,6 +11,11 @@ fastify.register(require('@fastify/static'), {
   prefix: '/'
 });
 
+// Fallback to explicitly serve index.html for root path, needed by some cloud providers
+fastify.get('/', async (request, reply) => {
+  return reply.sendFile('index.html');
+});
+
 // --- API Routes ---
 fastify.register(require('./backend/routes/auth'), { prefix: '/api/auth' });
 fastify.register(require('./backend/routes/projects'), { prefix: '/api/projects' });
