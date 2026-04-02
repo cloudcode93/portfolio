@@ -17,6 +17,19 @@ fastify.get('/', async (request, reply) => {
 });
 
 // --- API Routes ---
+// Health Check Endpoint
+fastify.get('/api/health', async (request, reply) => {
+  try {
+    const supabase = require('./backend/utils/supabase');
+    // Ping DB
+    const { error } = await supabase.from('settings').select('id').limit(1);
+    if (error) throw error;
+    return { status: 'healthy', database: 'connected', timestamp: new Date().toISOString() };
+  } catch(err) {
+    return reply.code(500).send({ status: 'unhealthy', database: 'disconnected', error: err.message });
+  }
+});
+
 fastify.register(require('./backend/routes/auth'), { prefix: '/api/auth' });
 fastify.register(require('./backend/routes/projects'), { prefix: '/api/projects' });
 fastify.register(require('./backend/routes/blogs'), { prefix: '/api/blogs' });
